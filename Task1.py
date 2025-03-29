@@ -79,9 +79,16 @@ class AddressBook(UserDict):
         today = datetime.today()
         for record in self.data.values():
             if record.birthday:
-                days_left = (record.birthday.value - today).days
+                birthday_this_year = record.birthday.value.replace(year=today.year)
+
+                # Якщо день народження вже був в цьому році, перенесемо на наступний
+                if birthday_this_year < today:
+                    birthday_this_year = birthday_this_year.replace(year=today.year + 1)
+
+                days_left = (birthday_this_year - today).days
                 if 0 <= days_left <= 7:
                     upcoming.append(record)
+
         return upcoming
 
 def input_error(func):
